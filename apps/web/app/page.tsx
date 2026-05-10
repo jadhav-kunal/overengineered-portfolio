@@ -3,11 +3,12 @@
 import { useState, useRef, useEffect } from 'react'
 import { person, experience, projects } from '@/data/content'
 import FluidCursor from '@/components/FluidCursor'
+import AuroraBg from '@/components/AuroraBg'
 
 export default function HomePage() {
-  const [hoverHighlight, setHoverHighlight] = useState(false)
-  const [dotGrid, setDotGrid] = useState(false)
   const [fluidCursor, setFluidCursor] = useState(false)
+  const [auroraBg, setAuroraBg] = useState(false)
+  const [glassCards, setGlassCards] = useState(false)
   const [showOptions, setShowOptions] = useState(false)
   const optionsRef = useRef<HTMLDivElement>(null)
 
@@ -25,43 +26,95 @@ export default function HomePage() {
     <>
       {fluidCursor && <FluidCursor />}
 
-      {hoverHighlight && (
-        <style>{`
-          section:hover { background-color: #ffffcc; }
-          nav a:hover  { background-color: #ffffcc; }
-        `}</style>
+      {auroraBg && (
+        <>
+          <style>{`body { background: transparent !important; } main { position: relative; z-index: 1; }`}</style>
+          <AuroraBg />
+        </>
       )}
 
-      {dotGrid && (
+      {glassCards && (
         <style>{`
+          @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap');
           body {
-            background-image: radial-gradient(#00000018 1px, transparent 1px);
-            background-size: 22px 22px;
+            font-family: 'DM Sans', system-ui, sans-serif;
+            color: #111111;
           }
+          main {
+            padding: 0 15%;
+          }
+          .page-header, section {
+            background: rgba(255, 255, 255, 0.20);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-radius: 14px;
+            padding: 24px 32px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            color: #111111;
+          }
+          nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+          }
+          nav a {
+            background: rgba(255, 255, 255, 0.24);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 4px 16px;
+            text-decoration: none;
+            color: #111111;
+            display: inline-block;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+          }
+          nav a:hover {
+            background: rgba(255, 255, 255, 0.42);
+          }
+          fieldset {
+            background: rgba(255, 255, 255, 0.20);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-radius: 14px;
+            border: none;
+            margin-top: 8px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            color: #111111;
+          }
+          hr {
+            border: none;
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+          }
+          h2 { color: #111111; }
+          h3 { color: #111111; }
         `}</style>
       )}
 
       <main>
-        <h1>{person.name}</h1>
+        <div className="page-header">
+          <h1>{person.name}</h1>
 
-        <p>
-          {person.phone}
-          {' · '}
-          <a href={`mailto:${person.email}`}>{person.email}</a>
-          {' · '}
-          <a href={person.linkedin} target="_blank" rel="noreferrer">linkedin</a>
-          {' · '}
-          <a href={person.github} target="_blank" rel="noreferrer">github</a>
-        </p>
+          <p>
+            {person.phone}
+            {' · '}
+            <a href={`mailto:${person.email}`}>{person.email}</a>
+            {' · '}
+            <a href={person.linkedin} target="_blank" rel="noreferrer">linkedin</a>
+            {' · '}
+            <a href={person.github} target="_blank" rel="noreferrer">github</a>
+          </p>
 
-        <p>{person.summary}</p>
+          <p>{person.summary}</p>
+        </div>
 
-        <div ref={optionsRef}>
+        <div ref={optionsRef} style={{ marginTop: '1.4em' }}>
           <nav>
             <a href="#experience">Experience</a>
-            {' · '}
+            {!glassCards && ' · '}
             <a href="#projects">Projects</a>
-            {' · '}
+            {!glassCards && ' · '}
             <a
               href="#"
               onClick={(e) => { e.preventDefault(); setShowOptions((v) => !v) }}
@@ -71,26 +124,8 @@ export default function HomePage() {
           </nav>
 
           {showOptions && (
-            <fieldset>
+            <fieldset style={{ marginTop: '0.8em' }}>
               <legend>Display</legend>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={hoverHighlight}
-                  onChange={(e) => setHoverHighlight(e.target.checked)}
-                />
-                {' '}Hover highlights
-              </label>
-              <br />
-              <label>
-                <input
-                  type="checkbox"
-                  checked={dotGrid}
-                  onChange={(e) => setDotGrid(e.target.checked)}
-                />
-                {' '}Dot grid background
-              </label>
-              <br />
               <label>
                 <input
                   type="checkbox"
@@ -99,16 +134,34 @@ export default function HomePage() {
                 />
                 {' '}Fluid distortion cursor
               </label>
+              <br />
+              <label>
+                <input
+                  type="checkbox"
+                  checked={auroraBg}
+                  onChange={(e) => setAuroraBg(e.target.checked)}
+                />
+                {' '}Aurora background
+              </label>
+              <br />
+              <label>
+                <input
+                  type="checkbox"
+                  checked={glassCards}
+                  onChange={(e) => setGlassCards(e.target.checked)}
+                />
+                {' '}Glass UI
+              </label>
             </fieldset>
           )}
         </div>
 
-        <hr />
+        <hr style={{ margin: '1.6em 0' }} />
 
-        <h2 id="experience">Experience</h2>
+        <h2 id="experience" style={{ marginBottom: '0.8em' }}>Experience</h2>
 
         {experience.map((job) => (
-          <section key={`${job.company}-${job.period}`}>
+          <section key={`${job.company}-${job.period}`} style={{ marginBottom: '1.2em' }}>
             <h3>{job.title} at {job.company}</h3>
             <p><small>{job.period}</small></p>
             <ul>
@@ -119,12 +172,12 @@ export default function HomePage() {
           </section>
         ))}
 
-        <hr />
+        <hr style={{ margin: '1.6em 0' }} />
 
-        <h2 id="projects">Projects</h2>
+        <h2 id="projects" style={{ marginBottom: '0.8em' }}>Projects</h2>
 
         {projects.map((project) => (
-          <section key={project.name}>
+          <section key={project.name} style={{ marginBottom: '1.2em' }}>
             <h3>{project.name}</h3>
             <p><small>{project.period}</small></p>
             <ul>

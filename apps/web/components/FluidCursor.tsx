@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
 
 const SIM_RES = 128
 const DYE_RES = 512
-const LENS_SIZE = 260
+const LENS_SIZE = 340
 const half = LENS_SIZE / 2
 
 // Radial gradient mask: white at centre → transparent at edge. Computed once.
@@ -57,7 +57,8 @@ uniform sampler2D u_dye;
 out vec4 fragColor;
 void main() {
   vec3 c = texture(u_dye, v_uv).rgb;
-  fragColor = vec4(c, clamp(length(c) * 3.0, 0.0, 0.45));
+  float b = length(c);
+  fragColor = vec4(c, clamp(b * b * 7.0, 0.0, 0.30));
 }`
 
 function mkShader(gl: WebGL2RenderingContext, type: GLenum, src: string) {
@@ -112,9 +113,9 @@ export default function FluidCursor() {
     // Build lens mask once and set on feImage
     if (imgRef.current) imgRef.current.setAttribute('href', buildLensMask(LENS_SIZE))
 
-    // Apply warp filter to page content
-    const main = document.querySelector('main') as HTMLElement | null
-    if (main) main.style.filter = 'url(#fluid-warp)'
+    // Apply warp filter to entire page so aurora background is also distorted
+    const root = document.documentElement
+    root.style.filter = 'url(#fluid-warp)'
 
     const advectProg  = mkProg(gl, VS, ADVECT_FS)
     const splatProg   = mkProg(gl, VS, SPLAT_FS)
@@ -195,7 +196,7 @@ export default function FluidCursor() {
         speed = Math.sqrt(dx * dx + dy * dy)
         px = mx; py = my
         splat(velocity, SIM_RES, SIM_RES, mx, my, [dx, dy, 0], 0.0004)
-        splat(dye, DYE_RES, DYE_RES, mx, my, [0.72, 0.68, 0.64], 0.0007)
+        splat(dye, DYE_RES, DYE_RES, mx, my, [0.72, 0.94, 0.75], 0.0012)
         moved = false
       }
 
@@ -230,7 +231,7 @@ export default function FluidCursor() {
       cancelAnimationFrame(raf)
       window.removeEventListener('mousemove', onMove)
       window.removeEventListener('resize', resize)
-      if (main) main.style.filter = ''
+      root.style.filter = ''
     }
   }, [])
 
