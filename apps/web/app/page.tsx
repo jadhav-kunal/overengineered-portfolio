@@ -7,11 +7,13 @@ import AuroraBg from '@/components/AuroraBg'
 import dynamic from 'next/dynamic'
 
 const HammerGirl = dynamic(() => import('@/components/HammerGirl'), { ssr: false })
+const LanternCursor = dynamic(() => import('@/components/LanternCursor'), { ssr: false })
 
 export default function HomePage() {
   const [fluidCursor, setFluidCursor] = useState(false)
   const [auroraBg, setAuroraBg] = useState(false)
   const [glassCards, setGlassCards] = useState(false)
+  const [darkMode, setDarkMode] = useState(false)
   const [showOptions, setShowOptions] = useState(false)
   const [showGirl, setShowGirl] = useState(false)
   const [girlFading, setGirlFading] = useState(false)
@@ -49,6 +51,9 @@ export default function HomePage() {
   return (
     <>
       {fluidCursor && <FluidCursor />}
+
+      {darkMode && <LanternCursor />}
+      {darkMode && <style>{'* { cursor: grab !important; }'}</style>}
 
       {auroraBg && (
         <>
@@ -248,6 +253,15 @@ export default function HomePage() {
                 />
                 {' '}Glass UI
               </label>
+              <br />
+              <label>
+                <input
+                  type="checkbox"
+                  checked={darkMode}
+                  onChange={(e) => setDarkMode(e.target.checked)}
+                />
+                {' '}Dark mode
+              </label>
             </fieldset>
           )}
         </div>
@@ -287,6 +301,10 @@ export default function HomePage() {
           <small>
             <a href="https://skfb.ly/6SxIn" target="_blank" rel="noreferrer">Reyce, Nuclear Hammer Girl with animation</a>
             {' '}by outcast945 is licensed under{' '}
+            <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC Attribution 4.0</a>.
+            {' · '}
+            <a href="https://skfb.ly/6V8uF" target="_blank" rel="noreferrer">Dark Lantern Rigged</a>
+            {' '}by Loopenkoopen is licensed under{' '}
             <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC Attribution 4.0</a>.
           </small>
         </p>
