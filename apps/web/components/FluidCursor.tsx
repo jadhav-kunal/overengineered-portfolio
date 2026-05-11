@@ -107,8 +107,9 @@ export default function FluidCursor() {
 
   useEffect(() => {
     const canvas = canvasRef.current!
-    const gl = canvas.getContext('webgl2', { alpha: true, premultipliedAlpha: false })
-    if (!gl || !gl.getExtension('EXT_color_buffer_half_float')) return
+    const glOrNull = canvas.getContext('webgl2', { alpha: true, premultipliedAlpha: false })
+    if (!glOrNull || !glOrNull.getExtension('EXT_color_buffer_half_float')) return
+    const gl = glOrNull
 
     // Build lens mask once and set on feImage
     if (imgRef.current) imgRef.current.setAttribute('href', buildLensMask(LENS_SIZE))
